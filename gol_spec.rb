@@ -47,6 +47,11 @@ class Cell
 				@neighbors << cell
 			end
 
+			#has cell to the south
+			if self.x == cell.x+1 && self.y == cell.y+1
+				@neighbors << cell
+			end
+
 		end
 		@neighbors
 	end
@@ -71,6 +76,10 @@ class World
 	def tick!
 		cells.each do |cell|
 			if cell.neighbors.count < 2
+				cell.die!
+			end
+
+			if cell.meighbors.count > 3
 				cell.die!
 			end
 		end
@@ -134,6 +143,14 @@ describe "game of life" do
 		other_new_cell = cell.spawn_at(-1,0)
 		world.tick!
 		expect(cell).to be_alive
+	end
+
+	it "Rule: 3 Any live cell with more than three live neighbours dies, as if by overcrowding." do 
+		cell = Cell.new(world)
+		new_cell = cell.spawn_at(1,0)
+		other_new_cell = cell.spawn_at(-1,0)
+		another_new_cell = cell.spawn_at(2,0)
+		one_more_cell = cell.spawn_at(2,1)
 	end
 
 
